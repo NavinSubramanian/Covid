@@ -1,0 +1,86 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <link rel="stylesheet" href="{% static 'admin.css' %}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <main>
+        <div class="topbar">
+            <div class="">
+                <h3 style="overflow: hidden;font-family: 'Poppins';font-weight: 500;">Hello admin</h3>
+            </div>
+            <div class="right">
+                <form action="logout" method="post">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-dark">Logout</button>
+                </form>
+                <i class="fa-solid fa-user"></i>
+            </div>
+        </div>
+        <div class="searchbar"></div>
+        <div class="tableview">
+            <table class="table table-hover table-bordered">
+                <thead class="table-secondary">
+                    <tr>
+                    <th scope="col"></th>
+                    <th scope="col">Center Name</th>
+                    <th scope="col">Location</th>
+                    <th scope="col">Slots available</th>
+                    <th scope="col">Remove Center</th>
+                    </tr>
+                </thead>
+                <tbody class="table-group-divider">
+                    {% for i in center %}
+                    <tr>
+                        <th scope="row">{{i.id}}</th>
+                        <td>{{i.name}}</td>
+                        <td>{{i.location}}</td>
+                        {% for key, value in slots.items %}
+                        {% if key == i.name %}
+                        <td>{{value}}</td>
+                        {% endif %}
+                        {% endfor %}
+                        <td><button class="btn btn-primary"><a href="delete_center/{{i.id}}" style="text-decoration: none;color: white;font-weight: 500;">Remove</a></button></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <br><hr><br>
+        <div class="create">
+            <h4 class="sub-heading">CREATE CENTER</h4><br>
+            <form method="post" style="width: 50%;margin-left: 50px;">
+                {% csrf_token %}
+                <label for="name">Name:</label>
+                <input class="form-control" type="text" name="name" required>
+                <label for="location">Location:</label>
+                <input class="form-control" type="text" name="location" required>
+                <label for="address">Address:</label>
+                <input class="form-control" type="text" name="address" required>
+                <button type="submit" class="btn btn-dark" style="margin-top: 20px;margin-bottom: 20px;">Add Center</button>
+            </form>
+        </div>
+        <br><hr><br>
+        <div class="slots">
+            <h4 class="sub-heading">ADD SLOTS</h4><br>
+            <form method="post" action="addslot" style="width: 50%;margin-left: 50px;">
+                {% csrf_token %}
+                <label for="name">Name of Center:</label>
+                <input class="form-control" type="text" name="name" required>
+                <label for="timing">Timings:</label>
+                <input class="form-control" type="text" name="timing" required>
+                <button type="submit" class="btn btn-dark" style="margin-top: 20px;margin-bottom: 20px;">Add Slot</button>
+            </form>
+        </div>
+    </main>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+</body>
+</html>

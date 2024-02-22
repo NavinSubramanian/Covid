@@ -1,0 +1,174 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        *{
+            padding: 0;
+            margin: 0;
+            box-sizing: border-box;
+            height: auto;
+            overflow-y: visible;
+            overflow-x: hidden;
+        }
+
+        main{
+            height: auto;
+            width: 100vw;
+        }
+
+        .tableview{
+            height: 100%;
+            width: 80%;
+            margin: 0 auto;
+        }
+
+        .grid{
+            display: grid;
+            gap: 50px 200px;
+            margin-right: 50px;
+            margin-left: 50px;
+            grid-template-columns: auto auto auto;
+        }
+        .grid-items{
+            border: 2px solid;
+        }
+
+        .topbar{
+            display: flex;
+            width: 100%;
+            justify-content: space-around;
+            align-items: center;
+            box-shadow: 0px 15px 10px -15px #111;    
+            height: 50px;
+            overflow: hidden;
+            background-color: white;
+
+        }
+        .right{
+            display: flex;
+            width: 10%;
+            align-items: center;
+            justify-content: space-between;
+        }
+        main,html{
+            background-color: #c8d9ed;
+        }
+
+        .bar{
+            display: flex;
+            width: 100%;
+            align-items: center;
+            justify-content: space-between;
+            margin-left: 150px;
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+        .list{
+            border: 2px solid #8e9399;
+            border-radius: 10px;
+            padding: 5px 13px;
+            font-weight: 500;
+            font-size: 14px;
+            color: #8e9399;
+        }
+
+        thead{
+            background-color: #437FC7;
+            border-radius: 20px;
+        }
+
+        .yourbo{
+            overflow: visible;
+            margin-left: 50px;
+            position: relative;
+            font-family: 'Poppins';
+            font-weight: 600;
+        }
+        .yourbo::after{
+            content: "";
+            width: 10%;
+            height: 2px;
+            background-color: #8e9399;
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+        }
+    </style>
+</head>
+<body>
+    <main>
+        <div class="topbar">
+            <div class="">
+                <h3 style="overflow: hidden;font-family: 'Poppins';font-weight: 500;">Welcome {{user}}</h3>
+            </div>
+            <div class="right">
+                <form action="logout" method="post">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-dark">Logout</button>
+                </form>
+                <i class="fa-solid fa-user"></i>
+            </div>
+        </div>
+        <div class="bar">
+            <div class="barleft">
+                <h5 class="list" style="overflow: hidden;">Center List</h5>
+            </div>
+            <div class="searchbar"></div>
+        </div>
+        <div class="tableview">
+            <table class="table table-hover table-bordered">
+                <thead>
+                    <tr class="bg-437FC7">
+                    <th scope="col"></th>
+                    <th scope="col bg-437FC7">Center Name</th>
+                    <th scope="col">Location</th>
+                    <th scope="col">Slots available</th>
+                    <th scope="col">Additional details</th>
+                    </tr>
+                </thead>
+                <tbody class="table-group-divider">
+                    {% for i in center %}
+                    <tr>
+                        <th scope="row">{{i.id}}</th>
+                        <td>{{i.name}}</td>
+                        <td>{{i.location}}</td>
+                        {% for key, value in slots.items %}
+                        {% if key == i.name %}
+                        <td>{{value}}</td>
+                        {% endif %}
+                        {% endfor %}
+                        <td><button class="btn btn-primary"><a href="dashboard/{{i.id}}" target="_blank" style="text-decoration: none;color: white;font-weight: 500;">Expand</a></button></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <br><hr><br>
+        <h4 class="yourbo">YOUR BOOKED SLOTS</h4><br>
+        <div class="grid">
+            {% for i in userslots %}
+            <div class="grid-items card">
+                <div class="card-body">
+                    {% for j in center %}
+                    {% if i.name_id == j.id %}
+                    <p class="card-title">Center Name : {{j.name}}</p>
+                    {% endif %}
+                    {% endfor %}
+                    <p class="card-subtitle mb-2 text-body-secondary">Slot timings : {{ i.timings }} O'clock</p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </main>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+</body>
+</html>
